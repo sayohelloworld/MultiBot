@@ -1,6 +1,7 @@
 const guildConfig = require('../utils/guildConfig');
 const points = require('../utils/points');
 const config = require('../../config');
+const afkCommand = require('../commands/utility/afk');
 
 function isExecutableBuffer(buffer) {
   if (!buffer || buffer.length < 2) {
@@ -111,6 +112,7 @@ async function checkAttachment(attachment) {
     if (!response.ok) {
       return false;
     }
+
     const arrayBuffer = await response.arrayBuffer();
 
     const buffer = Buffer.from(arrayBuffer);
@@ -123,6 +125,59 @@ async function checkAttachment(attachment) {
     );
 
     return false;
+  }
+}
+
+function handleAfk(message) {
+  const afkUsers = afkCommand.afkUsers;
+
+  if (!afkUsers) return;
+
+  const authorAfk = afkUsers.get(
+    message.author.id
+  );
+
+  if (authorAfk) {
+    afkUsers.delete(
+      message.author.id
+    );
+
+    message.reply(
+      `👋 ${message.author}, ton statut AFK a été retiré.`
+    ).catch(() => {});
+  }
+
+  if (message.mentions.users.size === 0) {
+    return;
+  }
+
+  for (const user of message.mentions.users.values()) {
+    if (user.bot) continue;
+
+    const afk = afkUsers.get(user.id);
+
+    if (!afk) continue;
+
+    const elapsed =
+      Math.floor(
+        (Date.now() - afk.timestamp) / 1000
+      );
+
+    let duration;
+
+    if (elapsed < 60) {
+      duration = `${elapsed}s`;
+    } else if (elapsed < 3600) {
+      duration = `${Math.floor(elapsed / 60)}m`;
+    } else if (elapsed < 86400) {
+      duration = `${Math.floor(elapsed / 3600)}h`;
+    } else {
+      duration = `${Math.floor(elapsed / 86400)}j`;
+    }
+
+    message.channel.send(
+      `💤 <@${user.id}> est actuellement AFK : **${afk.reason}** — depuis ${duration}.`
+    ).catch(() => {});
   }
 }
 
@@ -212,6 +267,8 @@ module.exports = {
     }
 
     if (message.author.bot) return;
+
+    handleAfk(message);
 
     const prefix =
       guildConfig.get(message.guild.id, 'prefix') ||
