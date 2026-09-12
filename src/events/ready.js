@@ -14,12 +14,13 @@ let currentStatus = 0;
 function updateStatus(client) {
   const status = statuses[currentStatus];
 
+  // Ce n'est pas obligé de faire un status de type STREAMING, si vous vous en foutez enlever tout ce bloc et faites un status simple soit en ligne, inactif, dnd ou invisible !!
   client.user.setPresence({
     activities: [
       {
         name: status,
         type: ActivityType.Streaming,
-        url: 'https://www.twitch.tv/xbloxet'
+        url: 'https://www.twitch.tv/ton-twitch'
       }
     ],
     status: 'online'
