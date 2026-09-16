@@ -63,7 +63,7 @@ Il regroupe plusieurs systèmes permettant de gérer, sécuriser et améliorer u
 ## 📥 Installation
 
 ```bash
-git clone https://github.com/ylsvh/MultiBot.git
+git clone https://github.com/sayohelloworld/MultiBot.git
 cd MultiBot
 npm install
 ````
