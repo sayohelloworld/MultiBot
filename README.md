@@ -219,6 +219,10 @@ See [`LICENSE`](LICENSE) for more information.
 
 ---
 
+>  **⚠️ Disclaimer:** MultiBot is provided as-is. The author is not responsible for any modifications, misuse, damages, or consequences resulting from the use, modification, or redistribution of this software.
+
+---
+
 <p align="center">
   Made with ♡ by <b>Sayo</b>
 </p>
