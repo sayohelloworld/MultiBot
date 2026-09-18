@@ -1,137 +1,141 @@
 # 🤖 MultiBot
 
-MultiBot est un bot Discord multifonctions développé avec Node.js et Discord.js v14.
+> ✦ A modern, multifunctional Discord bot built with **Node.js** & **Discord.js v14** ♡
 
-Il regroupe plusieurs systèmes permettant de gérer, sécuriser et améliorer un serveur Discord.
+MultiBot brings together everything you need to **manage, secure and customize** your Discord server — all in one bot.
 
-## Fonctionnalités
+---
 
-### 🛡️ Modération
-- Ban, kick, mute et warn
-- Commandes de modération
-- Permissions configurables
-- Logs de modération
-- Protection anti-raid
-- Protection anti-spam
-- Système de captcha
+## ✨ Features
 
-### 💰 Économie
-- Système de balance
-- Banque
-- Récompenses quotidiennes
-- Paiements entre utilisateurs
-- Classements
-- Casino et jeux virtuels
-- Commandes économiques
+🛡️ **Moderation**
 
-### 🎵 Musique
-- Lecture de musique
-- Support YouTube et SoundCloud
-- File d'attente
-- Skip et stop
-- Playlists
-- Gestion des salons vocaux
+* Ban, kick, mute & warn
+* Moderation logs
+* Configurable permissions
+* Anti-raid & anti-spam
+* Captcha system
 
-### 🎫 Tickets
-- Système de tickets configurable
-- Plusieurs catégories
-- Descriptions et emojis personnalisés
-- Rôles staff dédiés
-- Catégories Discord dédiées
-- Logs des tickets
-- Panneau personnalisable
-- Interface Discord Components V2
-- Bouton automatique avec une seule catégorie
-- Menu de sélection avec plusieurs catégories
+💰 **Economy**
 
-### 🔧 Utilitaires
-- Informations sur le bot
-- Informations sur le serveur
-- Informations utilisateur
-- Ping et latence
-- Système d'aide
-- Outils de gestion du serveur
+* Wallet & bank
+* Daily rewards
+* User payments
+* Leaderboards
+* Casino & virtual games
 
-## 📋 Prérequis
+🎵 **Music**
 
-- Node.js 18 ou supérieur
-- npm
-- Une application Discord
-- Un token Discord
-- Les permissions et intents nécessaires
+* YouTube & SoundCloud
+* Queue system
+* Playlists
+* Skip, stop & playback controls
+* Voice channel management
 
-## 📥 Installation
+🎫 **Tickets**
+
+* Fully configurable ticket system
+* Multiple categories
+* Custom emojis & descriptions
+* Dedicated staff roles
+* Discord category support
+* Ticket logs
+* Custom panels
+* Discord Components V2
+* Automatic button / select menu system
+
+🔧 **Utilities**
+
+* Bot, server & user information
+* Ping & latency
+* Help system
+* Server management tools
+
+---
+
+## 🛠️ Tech Stack
+
+![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=for-the-badge\&logo=node.js\&logoColor=white)
+![Discord.js](https://img.shields.io/badge/Discord.js-v14-5865F2?style=for-the-badge\&logo=discord\&logoColor=white)
+![npm](https://img.shields.io/badge/npm-Package_Manager-CB3837?style=for-the-badge\&logo=npm\&logoColor=white)
+
+---
+
+## 📦 Installation
 
 ```bash
 git clone https://github.com/sayohelloworld/MultiBot.git
 cd MultiBot
 npm install
-````
+```
 
-Configurez ensuite votre fichier `config.js`.
+Then configure your `config.js`.
 
-## ⚙️ Configuration
-
-Exemple :
+### ⚙️ Configuration
 
 ```js
 module.exports = {
-    token: "VOTRE_TOKEN_DISCORD",
-    clientId: "VOTRE_CLIENT_ID",
+    token: "YOUR_DISCORD_TOKEN",
+    clientId: "YOUR_CLIENT_ID",
     prefix: "+",
     embedColor: "#49ff02",
-    ownerId: "VOTRE_ID_DISCORD",
-    supportServerInvite: "https://discord.gg/votre-serveur"
+    ownerId: "YOUR_DISCORD_ID",
+    supportServerInvite: "https://discord.gg/your-server"
 };
 ```
 
-| Option                | Description                      |
-| --------------------- | -------------------------------- |
-| `token`               | Token du bot Discord             |
-| `clientId`            | ID de l'application Discord      |
-| `prefix`              | Préfixe des commandes            |
-| `embedColor`          | Couleur par défaut des embeds    |
-| `ownerId`             | ID Discord du propriétaire       |
-| `supportServerInvite` | Invitation du serveur de support |
+| Option                | Description            |
+| --------------------- | ---------------------- |
+| `token`               | Discord bot token      |
+| `clientId`            | Discord application ID |
+| `prefix`              | Command prefix         |
+| `embedColor`          | Default embed color    |
+| `ownerId`             | Bot owner's Discord ID |
+| `supportServerInvite` | Support server invite  |
 
-> Ne partagez jamais votre token Discord publiquement.
+> ⚠️ Never share your Discord token publicly.
 
-## 🚀 Lancement
+---
+
+## 🚀 Start
 
 ```bash
 node index.js
 ```
 
-Le bot se connectera ensuite à Discord.
+MultiBot will connect to Discord and start loading its commands and events.
 
-## 🎫 Système de tickets
+---
 
-Commandes principales :
+## 🎫 Ticket System
+
+### Main commands
 
 ```text
-+ticket panel [#salon]
-+ticket addcat <nom> [emoji] [description]
-+ticket removecat <nom>
-+ticket setrole <catégorie> @Role
-+ticket removerole <catégorie> @Role
-+ticket setcategory <catégorie> <ID>
-+ticket setdesc [catégorie] <texte>
++ticket panel [#channel]
++ticket addcat <name> [emoji] [description]
++ticket removecat <name>
++ticket setrole <category> @Role
++ticket removerole <category> @Role
++ticket setcategory <category> <ID>
++ticket setdesc [category] <text>
 +ticket setcolor <#hex>
-+ticket setlog #salon
++ticket setlog #channel
 +ticket config
 ```
 
-Une catégorie de ticket peut disposer de :
+Each ticket category can have:
 
-* Un nom
-* Un emoji
-* Une description
-* Un ou plusieurs rôles staff
-* Une catégorie Discord dédiée
+* 🏷️ Custom name
+* 🌸 Custom emoji
+* 📝 Custom description
+* 👥 Staff roles
+* 📁 Dedicated Discord category
 
-Avec une seule catégorie, le panneau utilise automatiquement un bouton.
+**1 category** → automatic button
+**Multiple categories** → selection menu
 
-Avec plusieurs catégories, un menu de sélection est utilisé.
+---
 
 ## 📁 Structure
 
@@ -149,21 +153,21 @@ Avec plusieurs catégories, un menu de sélection est utilisé.
     └── utils/
 ```
 
-### Dossiers principaux
+| Folder           | Purpose                    |
+| ---------------- | -------------------------- |
+| `commands/`      | Prefix commands            |
+| `slashCommands/` | Slash commands             |
+| `events/`        | Discord events             |
+| `structure/`     | Handlers & core structures |
+| `utils/`         | Utility modules            |
+| `assets/`        | Bot resources              |
+| `data/`          | Data & configurations      |
 
-* `commands/` — Commandes avec préfixe
-* `slashCommands/` — Commandes slash
-* `events/` — Événements Discord
-* `structure/` — Structures et handlers principaux
-* `utils/` — Modules utilitaires
-* `assets/` — Ressources du bot
-* `data/` — Données et configurations
+---
 
-## ⌨️ Commandes
+## ⌨️ Commands
 
-Le préfixe par défaut est `+`.
-
-Exemples :
+Default prefix: `+`
 
 ```text
 +help
@@ -172,13 +176,13 @@ Exemples :
 +ticket config
 ```
 
-Les commandes peuvent évoluer selon les versions de MultiBot.
+Commands may change between MultiBot versions.
 
-## 🌐 Déploiement
+---
 
-MultiBot peut fonctionner sur un VPS ou une plateforme compatible avec Node.js.
+## 🌐 Hosting
 
-Exemples :
+MultiBot works with most Node.js-compatible hosting providers.
 
 * Railway
 * Render
@@ -187,19 +191,34 @@ Exemples :
 * Hetzner
 * DigitalOcean
 
-Pour un fonctionnement 24/7, un VPS ou un hébergement cloud est recommandé.
+For **24/7 uptime**, a VPS or cloud host is recommended.
 
-## 🔐 Sécurité
+---
 
-Ne publiez jamais :
+## 🔐 Security
 
-* Votre token Discord
-* Votre fichier `.env`
-* Vos identifiants privés
-* Vos clés ou informations sensibles
+Never commit or publish:
 
-## 📜 Licence
+```text
+Discord tokens
+.env files
+Private credentials
+API keys
+Sensitive information
+```
 
-MultiBot est distribué sous licence MIT.
+Consider adding sensitive files to `.gitignore`.
 
-Voir [`LICENSE`](LICENSE) pour plus d'informations.
+---
+
+## 📜 License
+
+MultiBot is released under the **MIT License**.
+
+See [`LICENSE`](LICENSE) for more information.
+
+---
+
+<p align="center">
+  Made with ♡ by <b>Sayo</b>
+</p>
