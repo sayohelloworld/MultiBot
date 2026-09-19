@@ -45,7 +45,7 @@ module.exports = {
             ? member.roles.cache
                 .filter(r => r.id !== message.guild.id)
                 .sort((a, b) => b.position - a.position)
-                .map(r => r.name) // 🔥 FIX ICI
+                .map(r => r.name)
                 .join(', ') || 'Aucun'
             : 'Non membre';
 
