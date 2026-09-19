@@ -9,14 +9,18 @@ const economy = require('../../utils/economy');
 
 module.exports = {
   name: 'set-money',
-  description: 'Configure les récompenses daily, weekly et monthly.',
+  description: 'Configure les récompenses daily, weekly et monthly du serveur.',
 
   async execute(client, message, args) {
-    await message.channel.sendTyping();
+    if (!message.guild) {
+      return message.reply('❌ Cette commande doit être utilisée sur un serveur.');
+    }
 
     if (!message.member.permissions.has('Administrator')) {
       return message.reply('❌ Cette commande est réservée aux administrateurs.');
     }
+
+    await message.channel.sendTyping();
 
     const type = args[0]?.toLowerCase();
     const min = Number(args[1]);
@@ -39,7 +43,8 @@ module.exports = {
       );
     }
 
-    economy.setRewardConfig(type, min, max);
+   
+    economy.setRewardConfig(message.guild.id, type, min, max);
 
     const container = new ContainerBuilder()
       .setAccentColor(0x57F287);
@@ -57,7 +62,7 @@ module.exports = {
         `**Type :** ${type}\n` +
         `**Minimum :** ${min.toLocaleString()} coins\n` +
         `**Maximum :** ${max.toLocaleString()} coins\n\n` +
-        `Chaque récompense ${type} sera maintenant comprise dans cette plage.`
+        `Chaque récompense ${type} sur ce serveur sera maintenant comprise dans cette plage.`
       )
     );
 
