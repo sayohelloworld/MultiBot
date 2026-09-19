@@ -4,7 +4,7 @@ module.exports = {
     name: 'untimeout',
     description: 'Retire le timeout d’un membre',
 
-    async execute(client, message, args) { // <-- client ajouté
+    async execute(client, message, args) {
         if (!message.guild) return;
 
         if (!message.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
