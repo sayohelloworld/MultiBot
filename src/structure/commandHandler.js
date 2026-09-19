@@ -30,7 +30,7 @@ module.exports = (client) => {
           command.execute = command.run;
         }
 
-        // Add category based on the immediate parent folder
+       
         const relativePath = path.relative(commandsDir, filePath);
         const category = path.dirname(relativePath).split(path.sep)[0] || 'other';
         command.category = category;
