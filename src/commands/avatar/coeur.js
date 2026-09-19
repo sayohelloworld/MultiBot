@@ -25,7 +25,7 @@ module.exports = {
       const ctx = canvas.getContext('2d');
 
       ctx.drawImage(avatar, 0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = 'rgba(255, 20, 147, 0.35)'; // deeppink transparent
+      ctx.fillStyle = 'rgba(255, 20, 147, 0.35)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.drawImage(base, 0, 0, canvas.width, canvas.height);
