@@ -9,7 +9,7 @@ module.exports = {
         if (!interaction.guild) return;
 
         try {
-            // Boutons existants
+           
             if (interaction.customId === "enable_captcha") {
                 guildConfig.set(interaction.guild.id, 'captchaEnabled', true);
                 await interaction.reply({ content: "✅ Captcha activé pour ce serveur", ephemeral: true });
@@ -20,7 +20,7 @@ module.exports = {
                 await interaction.reply({ content: "🚨 Anti-Raid activé pour ce serveur", ephemeral: true });
             }
 
-            // Boutons economy
+           
             if (interaction.customId === 'refresh_balance') {
                 const userData = economy.getUserData(interaction.user.id);
                 const stats = economy.getUserStats(interaction.user.id);
@@ -80,26 +80,26 @@ module.exports = {
                 await interaction.update({ embeds: [embed] });
             }
 
-            // Gestion des boutons leaderboard
+           
             if (interaction.customId.startsWith('lb_')) {
                 const parts = interaction.customId.split('_');
                 const action = parts[1];
                 const page = parseInt(parts[2]);
 
                 if (action === 'prev' && page > 1) {
-                    // Recharger la commande leaderboard avec la page précédente
+                   
                     const leaderboardCmd = client.commands.get('leaderboard');
                     if (leaderboardCmd) {
                         await leaderboardCmd.execute(client, interaction.message, [page - 1]);
                     }
                 } else if (action === 'next') {
-                    // Recharger la commande leaderboard avec la page suivante
+                   
                     const leaderboardCmd = client.commands.get('leaderboard');
                     if (leaderboardCmd) {
                         await leaderboardCmd.execute(client, interaction.message, [page + 1]);
                     }
                 } else if (action === 'refresh') {
-                    // Recharger la commande leaderboard avec la même page
+                   
                     const leaderboardCmd = client.commands.get('leaderboard');
                     if (leaderboardCmd) {
                         await leaderboardCmd.execute(client, interaction.message, [page]);
@@ -107,7 +107,7 @@ module.exports = {
                 }
             }
 
-            // Gestion des boutons coinflip
+           
             if (interaction.customId.startsWith('cf_')) {
                 const parts = interaction.customId.split('_');
                 const choice = parts[1];
@@ -118,14 +118,14 @@ module.exports = {
                     return await interaction.reply({ content: '❌ Ce bouton n\'est pas pour vous !', ephemeral: true });
                 }
 
-                // Recharger la commande coinflip avec les mêmes paramètres
+               
                 const coinflipCmd = client.commands.get('coinflip');
                 if (coinflipCmd) {
                     await coinflipCmd.execute(client, interaction.message, [bet, choice]);
                 }
             }
 
-            // Gestion des boutons slots
+           
             if (interaction.customId.startsWith('slots_replay_')) {
                 const userId = interaction.customId.split('_')[2];
 
@@ -133,7 +133,7 @@ module.exports = {
                     return await interaction.reply({ content: '❌ Ce bouton n\'est pas pour vous !', ephemeral: true });
                 }
 
-                // Recharger la commande slots
+               
                 const slotsCmd = client.commands.get('slots');
                 if (slotsCmd) {
                     await slotsCmd.execute(client, interaction.message, []);
@@ -145,7 +145,7 @@ module.exports = {
             try {
                 await interaction.reply({ content: 'Une erreur est survenue.', ephemeral: true });
             } catch (e) {
-                // Ignore si l'interaction a déjà été répondu
+               
             }
         }
     }
