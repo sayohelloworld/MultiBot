@@ -1,5 +1,4 @@
 const { EmbedBuilder } = require('discord.js');
-const { evaluate } = require('mathjs');
 
 module.exports = {
     name: 'calcul',
@@ -10,9 +9,21 @@ module.exports = {
         if (!args.length) {
             return message.reply("Utilisation : `+calcul 2+2`");
         }
-        const expression = args.join(" ");
+
+        const expression = args.join(" ").trim();
+
+       
+        if (!/^[0-9+\-*/().\s]+$/.test(expression)) {
+            return message.reply("Expression invalide. Seuls les chiffres et `+ - * / ( )` sont autorisés.");
+        }
+
         try {
-            const result = evaluate(expression);
+           
+            const result = Function(`"use strict"; return (${expression})`)();
+
+            if (result === undefined || isNaN(result)) {
+                return message.reply("Calcul invalide.");
+            }
 
             const embed = new EmbedBuilder()
                 .setTitle('🧮 Calculatrice')
