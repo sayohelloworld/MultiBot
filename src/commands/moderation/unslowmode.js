@@ -4,7 +4,7 @@ module.exports = {
     name: 'unslowmode',
     description: 'Désactive le slowmode dans le salon',
 
-    async execute(client, message) { // <-- client ajouté
+    async execute(client, message) {
         if (!message.guild) return;
 
         if (!message.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
