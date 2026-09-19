@@ -740,7 +740,7 @@ async function generateTranscript(
 
             border:
                 1px solid
-                #1f2023;
+
         }
 
         .ticket-header {
@@ -750,7 +750,7 @@ async function generateTranscript(
 
             border-bottom:
                 1px solid
-                #1f2023;
+
         }
 
         .ticket-title {
@@ -832,7 +832,7 @@ async function generateTranscript(
 
             border-left:
                 4px solid
-                #5865f2;
+
 
             padding: 15px;
 
@@ -1101,7 +1101,7 @@ async function generateTranscript(
 
             border-left:
                 4px solid
-                #5865f2;
+
 
             border-radius: 4px;
 
@@ -1222,7 +1222,7 @@ async function generateTranscript(
             </div>
 
             <div class="ticket-number">
-                #${ticketNumber}
+
             </div>
 
         </div>
