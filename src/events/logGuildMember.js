@@ -14,7 +14,7 @@ module.exports = {
         if (newMember.user?.bot) return;
         const guild = newMember.guild;
 
-        // ── Boost ──
+       
         const wasBosting = !!oldMember.premiumSince;
         const isBoosting = !!newMember.premiumSince;
         if (!wasBosting && isBoosting) {
@@ -58,7 +58,7 @@ module.exports = {
             await sendLog(guild, 'boost', container);
         }
 
-        // ── Rôles ──
+       
         const oldRoles = oldMember.roles.cache;
         const newRoles = newMember.roles.cache;
         const added = newRoles.filter(r => !oldRoles.has(r.id));
