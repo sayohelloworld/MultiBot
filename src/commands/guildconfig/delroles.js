@@ -32,14 +32,14 @@ function saveExclusions(data) {
 function getRoleFromArgument(message, argument) {
     if (!argument) return null;
 
-    // Mention de rôle : <@&123456789>
+   
     const mentionMatch = argument.match(/^<@&(\d+)>$/);
 
     if (mentionMatch) {
         return message.guild.roles.cache.get(mentionMatch[1]) || null;
     }
 
-    // ID du rôle
+   
     return message.guild.roles.cache.get(argument) || null;
 }
 
@@ -65,7 +65,7 @@ module.exports = {
             exclusions[guildId] = [];
         }
 
-        // +delroles add @Rôle
+       
         if (subcommand === 'add') {
             const role = getRoleFromArgument(message, args[1]);
 
@@ -99,7 +99,7 @@ module.exports = {
             );
         }
 
-        // +delroles remove @Rôle
+       
         if (subcommand === 'remove') {
             const role = getRoleFromArgument(message, args[1]);
 
@@ -125,7 +125,7 @@ module.exports = {
             );
         }
 
-        // +delroles list
+       
         if (subcommand === 'list') {
             const protectedRoles = exclusions[guildId]
                 .map(id => message.guild.roles.cache.get(id))
@@ -146,7 +146,7 @@ module.exports = {
             );
         }
 
-        // +delroles clear
+       
         if (subcommand === 'clear') {
             exclusions[guildId] = [];
             saveExclusions(exclusions);
@@ -156,7 +156,7 @@ module.exports = {
             );
         }
 
-        // +delroles
+       
         try {
             const roles = message.guild.roles.cache;
 
@@ -165,25 +165,25 @@ module.exports = {
             let protectedCount = 0;
 
             for (const [, role] of roles) {
-                // Ignore @everyone
+               
                 if (role.id === message.guild.id) {
                     skipped++;
                     continue;
                 }
 
-                // Ignore les rôles gérés par Discord / bots / intégrations
+               
                 if (role.managed) {
                     skipped++;
                     continue;
                 }
 
-                // Ignore les rôles protégés
+               
                 if (exclusions[guildId].includes(role.id)) {
                     protectedCount++;
                     continue;
                 }
 
-                // Ignore les rôles au-dessus ou au même niveau que le bot
+               
                 if (role.position >= message.guild.members.me.roles.highest.position) {
                     skipped++;
                     continue;
