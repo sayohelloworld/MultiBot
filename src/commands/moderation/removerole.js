@@ -8,7 +8,7 @@ module.exports = {
     const member = message.mentions.members.first();
     if (!member) {
       return message.channel.send("Veuillez mentionner un membre à qui retirer un rôle.");
-    }  // Vérifie si un rôle a été mentionné
+    } 
     const role = message.mentions.roles.first();
     if (!role) {
       return message.channel.send("Veuillez mentionner un rôle à retirer.");
