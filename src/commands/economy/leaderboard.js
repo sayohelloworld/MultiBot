@@ -12,16 +12,35 @@ const economy = require('../../utils/economy');
 
 module.exports = {
   name: 'leaderboard',
-  aliases: ['lb', 'top', 'classement'],
   description: 'Affiche le classement des membres les plus riches.',
 
   async execute(client, message, args) {
-        await message.channel.sendTyping();
+    if (!message.guild) {
+      return message.reply('❌ Cette commande doit être utilisée sur un serveur.');
+    }
+
+    if (economy.isBlacklisted(message.guild.id, message.author.id)) {
+      return message.reply('❌ Vous êtes blacklisté de l\'économie sur ce serveur.');
+    }
+
+    await message.channel.sendTyping();
+
     const page = parseInt(args[0]) || 1;
     const perPage = 10;
     const offset = (page - 1) * perPage;
 
-    const leaderboard = economy.getLeaderboard(100);
+   
+    const allData = economy.loadData();
+    const prefix = `${message.guild.id}_`;
+
+    const leaderboard = Object.entries(allData)
+      .filter(([key]) => key.startsWith(prefix))
+      .map(([key, userData]) => {
+        const userId = key.replace(prefix, '');
+        const total = (userData.cash || 0) + (userData.bank || 0);
+        return { id: userId, total, ...userData };
+      })
+      .sort((a, b) => b.total - a.total);
 
     if (!leaderboard.length) {
       const container = new ContainerBuilder()
@@ -39,7 +58,7 @@ module.exports = {
 
       container.addTextDisplayComponents(
         new TextDisplayBuilder().setContent(
-          `Aucun utilisateur enregistré.`
+          `Aucun utilisateur enregistré sur ce serveur.`
         )
       );
 
@@ -49,15 +68,17 @@ module.exports = {
       });
     }
 
-    const totalPages = Math.ceil(leaderboard.length / perPage);
-    const pageData = leaderboard.slice(offset, offset + perPage);
+    const totalPages = Math.ceil(leaderboard.length / perPage) || 1;
+    const currentPage = Math.min(Math.max(1, page), totalPages);
+    const pageOffset = (currentPage - 1) * perPage;
+    const pageData = leaderboard.slice(pageOffset, pageOffset + perPage);
 
     const container = new ContainerBuilder()
       .setAccentColor(0xffd700);
 
     container.addTextDisplayComponents(
       new TextDisplayBuilder().setContent(
-        `## 🏆 Leaderboard`
+        `## 🏆 Leaderboard — ${message.guild.name}`
       )
     );
 
@@ -66,7 +87,7 @@ module.exports = {
     );
 
     const text = pageData.map((entry, i) => {
-      const rank = offset + i + 1;
+      const rank = pageOffset + i + 1;
       const medal =
         rank === 1 ? '🥇' :
         rank === 2 ? '🥈' :
@@ -88,7 +109,7 @@ module.exports = {
 
     container.addTextDisplayComponents(
       new TextDisplayBuilder().setContent(
-        `📄 Page **${page}/${totalPages}** • 👥 ${leaderboard.length} joueurs`
+        `📄 Page **${currentPage}/${totalPages}** • 👥 ${leaderboard.length} joueurs`
       )
     );
 
@@ -106,21 +127,21 @@ module.exports = {
 
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
-        .setCustomId(`lb_prev_${page}`)
+        .setCustomId(`lb_prev_${currentPage}`)
         .setLabel('◀')
         .setStyle(ButtonStyle.Secondary)
-        .setDisabled(page === 1),
+        .setDisabled(currentPage === 1),
 
       new ButtonBuilder()
-        .setCustomId(`lb_refresh_${page}`)
+        .setCustomId(`lb_refresh_${currentPage}`)
         .setLabel('🔄')
         .setStyle(ButtonStyle.Primary),
 
       new ButtonBuilder()
-        .setCustomId(`lb_next_${page}`)
+        .setCustomId(`lb_next_${currentPage}`)
         .setLabel('▶')
         .setStyle(ButtonStyle.Secondary)
-        .setDisabled(page === totalPages)
+        .setDisabled(currentPage === totalPages)
     );
 
     container.addActionRowComponents(row);
