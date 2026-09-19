@@ -3,7 +3,7 @@ const path = require("path");
 
 const ROOT = path.join(__dirname, "src");
 const FOLDERS = ["commands", "slashcommands"];
-const OUTPUT = path.join(__dirname, "commandes.txt");
+const OUTPUT = path.join(__dirname, "..", "data", "commandes.txt");
 
 const results = [];
 
