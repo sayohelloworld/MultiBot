@@ -9,30 +9,44 @@ const economy = require('../../utils/economy');
 
 module.exports = {
   name: 'deposit',
-  aliases: ['dep', 'deposer'],
   description: 'Dépose de l\'argent dans la banque.',
 
   async execute(client, message, args) {
-        await message.channel.sendTyping();
-    const amount = parseInt(args[0]);
+    if (!message.guild) {
+      return message.reply('❌ Cette commande doit être utilisée sur un serveur.');
+    }
+
+    if (economy.isBlacklisted(message.guild.id, message.author.id)) {
+      return message.reply('❌ Vous êtes blacklisté de l\'économie sur ce serveur.');
+    }
+
+    await message.channel.sendTyping();
+
+    const userData = economy.getUser(message.guild.id, message.author.id);
+
+    let amount;
+    if (args[0]?.toLowerCase() === 'all' || args[0]?.toLowerCase() === 'tout') {
+      amount = userData.cash;
+    } else {
+      amount = parseInt(args[0]);
+    }
 
     if (!amount || isNaN(amount) || amount <= 0) {
       return message.reply('❌ Montant invalide.');
     }
 
-    const userData = economy.getUserData(message.author.id);
-
     if (userData.cash < amount) {
-      return message.reply(`❌ Pas assez de coins.`);
+      return message.reply('❌ Pas assez de coins dans votre portefeuille.');
     }
 
-    const success = economy.deposit(message.author.id, amount);
+   
+    const newCash = userData.cash - amount;
+    const newBank = userData.bank + amount;
 
-    if (!success) {
-      return message.reply('❌ Erreur lors du dépôt.');
-    }
-
-    const newData = economy.getUserData(message.author.id);
+    const newData = economy.updateUser(message.guild.id, message.author.id, {
+      cash: newCash,
+      bank: newBank
+    });
 
     const container = new ContainerBuilder()
       .setAccentColor(0x00ff00);
@@ -70,6 +84,6 @@ module.exports = {
       flags: MessageFlags.IsComponentsV2
     });
 
-    console.log(`[ECONOMY] ${message.author.username} a déposé ${amount} coins`);
+    console.log(`[ECONOMY] [Guild: ${message.guild.id}] ${message.author.username} a déposé ${amount} coins`);
   }
 };
