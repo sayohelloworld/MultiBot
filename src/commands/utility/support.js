@@ -1,33 +1,37 @@
 const {
-  MessageFlags,
-  ContainerBuilder,
-  TextDisplayBuilder,
-  SeparatorBuilder,
-  SectionBuilder,
-  ThumbnailBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-} = require('discord.js')
+    ContainerBuilder,
+    TextDisplayBuilder,
+    SeparatorBuilder,
+    SectionBuilder,
+    ThumbnailBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    ActionRowBuilder,
+    MessageFlags
+} = require('discord.js');
 
 module.exports = {
-  name: 'support',
-  description: 'Invite du serveur support du bot',
+    name: 'support',
+    description: 'Envoie l\'invite du serveur support',
 
-  async execute(client, message, args) {
-    await message.channel.sendTyping();
-    const inviteURL = `https://discord.gg/`;
+    async execute(client, message, args) {
+        await message.channel.sendTyping();
 
-    const container = new ContainerBuilder();
-    container.addSectionComponents(
-      new SectionBuilder()
-      .addTextDisplayComponents(
-        new TextDisplayBuilder().setContent(
-          `# Serveur Support\n Clique sur le bouton ci-dessous`
-          )
+        const inviteURL = `https://discord.gg/`;
+
+        const container = new ContainerBuilder();
+
+        container.addSectionComponents(
+            new SectionBuilder()
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent(
+                        `# Serveur Support\nClique sur le bouton ci-dessous`
+                    )
                 )
                 .setThumbnailAccessory(
-                    new ThumbnailBuilder().setURL(client.user.displayAvatarURL({ size: 128 }))
+                    new ThumbnailBuilder().setURL(
+                        client.user.displayAvatarURL({ size: 128 })
+                    )
                 )
         );
 
@@ -38,6 +42,9 @@ module.exports = {
                 .setURL(inviteURL)
         );
 
-        message.reply({ components: [container, row], flags: MessageFlags.IsComponentsV2 });
-    },
+        message.reply({
+            components: [container, row],
+            flags: MessageFlags.IsComponentsV2
+        });
+    }
 };
