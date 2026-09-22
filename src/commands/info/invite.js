@@ -17,7 +17,7 @@ module.exports = {
         await message.channel.sendTyping();
         const inviteURL = `https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=8&integration_type=0&scope=bot`;
 
-        const container = new ContainerBuilder().setAccentColor(0x464EC2);
+        const container = new ContainerBuilder();
         container.addSectionComponents(
             new SectionBuilder()
                 .addTextDisplayComponents(
