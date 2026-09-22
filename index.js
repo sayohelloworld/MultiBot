@@ -133,6 +133,7 @@ async function getBotAdder(guild, botId) {
 
 client.once("ready", async () => {
   console.log(`✅ Connecté en tant que ${client.user.tag}`);
+  console.log(`[INVITE] https://discord.com/oauth2/authorize?client=${client.user.id}&permissions=8&integration_type=0&scope=bot`);
 
   await registerSlashCommands();
 
