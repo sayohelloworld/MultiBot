@@ -16,6 +16,7 @@ const categoryNames = {
     automod: "🛡️・Automod",
     avatar: "🎨・Avatars",
     backup: "💾・Backups",
+    birthday: "🎂・Anniversaires",
     confession: "💌・Confessions",
     guildconfig: "⚙️・Guild Config",
     economy: "💰・Economie",
