@@ -5,6 +5,7 @@ const categoryNames = {
     antiraid: "🛡️・AntiRaid",
     avatar: "🎨・Avatars",
     backup: "💾・Backups",
+    birthday: "🎂・Anniversaires",
     confession: "💌・Confessions",
     config: "⚙️・Configuration",
     economy: "💰・Economie",
