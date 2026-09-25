@@ -60,6 +60,11 @@ function getDefault() {
       crownSchedule: null
     },
 
+    birthdayConfig: {
+      channelId: null,
+      birthdays: {}
+    },
+
     points: {},
 
     logChannels: {
@@ -116,6 +121,12 @@ function getAll(guildId) {
       pointsConfig: {
         ...defaults.pointsConfig,
         ...(saved.pointsConfig || {})
+      },
+
+      birthdayConfig: {
+        ...defaults.birthdayConfig,
+        ...(saved.birthdayConfig || {}),
+        birthdays: saved.birthdayConfig?.birthdays || {}
       },
 
       points: saved.points || {},
