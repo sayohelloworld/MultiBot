@@ -14,7 +14,7 @@ const {
 const config = require("./config");
 const guildConfig = require("./src/utils/guildConfig");
 const statsTracker = require("./src/utils/statsTracker");
-const snipe = require("./src/commands/other/snipe");
+const snipe = require("./src/commands/utility/snipe");
 const { Player } = require("discord-player");
 
 function logAction(message) {
@@ -133,9 +133,7 @@ async function getBotAdder(guild, botId) {
 
 client.once("ready", async () => {
   console.log(`✅ Connecté en tant que ${client.user.tag}`);
-  console.log(`[INVITE] https://discord.com/oauth2/authorize?client=${client.user.id}&permissions=8&integration_type=0&scope=bot`);
-  console.log(`[Support] https://discord.gg/`);
-  
+
   await registerSlashCommands();
 
   client.guilds.cache.forEach(async (guild) => {
