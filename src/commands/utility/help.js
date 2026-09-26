@@ -34,6 +34,7 @@ const categoryNames = {
     points: "⭐・Points",
     roblox: "🎮・Roblox",
     utility: "🛠️・Utilitaires",
+    voice: "🎙️・Vocal",
 };
 
 module.exports = {
