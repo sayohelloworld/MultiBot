@@ -44,7 +44,7 @@ MultiBot includes a wide range of systems designed to simplify server management
 ### Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/MultiBot.git
+git clone https://github.com/sayohelloworld/MultiBot.git
 cd MultiBot
 ```
 
@@ -62,8 +62,13 @@ Example:
 
 ```js
 module.exports = {
-    token: 'YOUR_BOT_TOKEN',
-    clientId: 'YOUR_CLIENT_ID'
+  token: "VOTRE_TOKEN_DISCORD",
+  prefix: "+",
+  clientId: "ID_DU_BOT",
+  embedColor: "#49ff02",
+  ownerId: "VOTRE_ID_DISCORD",
+  supportServerInvite: "https://discord.gg/votre-serveur",
+  clientId: "ID_DU_BOT"
 };
 ```
 
@@ -110,18 +115,6 @@ To view the logs:
 ```bash
 pm2 logs MultiBot
 ```
-
-## 🔗 **Invite MultiBot**
-
-> ⚡ Invite MultiBot to your Discord server and discover all of its features.
-
-**[Invite MultiBot](https://discord.com/oauth2/authorize?client_id=1547975415258288288&scope=bot%20applications.commands&permissions=8)**
-
-## 📚 **Documentation**
-
-The project includes documentation covering MultiBot's commands and features.
-
-You can also explore the source code directly to understand how the different systems work and contribute to the project.
 
 ## 🤝 **Contributing**
 
