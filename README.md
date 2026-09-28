@@ -1,155 +1,224 @@
 # 🤖 MultiBot
 
-MultiBot est un bot Discord multifonctions conçu pour regrouper tout ce dont votre serveur a besoin dans un seul bot.
+> ✦ A modern, multifunctional Discord bot built with **Node.js** & **Discord.js v14** ♡
 
-Avec **+300 commandes**, MultiBot propose des fonctionnalités de **modération, utilitaires, gestion, automatisation, divertissement** et bien plus encore.
+MultiBot brings together everything you need to **manage, secure and customize** your Discord server — all in one bot.
 
-Le projet est **100 % gratuit**, régulièrement mis à jour et disponible publiquement sur GitHub.
+---
 
-## ✨ Fonctionnalités
+## ✨ Features
 
-> 🔨 **+300 commandes multifonctions**
->
-> 🛡️ **Modération & sécurité**
->
-> ⚙️ **Gestion & administration**
->
-> 🤖 **Automatisation**
->
-> 🎉 **Giveaways & événements**
->
-> 🎂 **Système d'anniversaires**
->
-> 🔊 **Gestion des salons vocaux**
->
-> 🎮 **Commandes fun & divertissement**
->
-> 🧰 **Utilitaires**
->
-> 📊 **Systèmes communautaires**
->
-> 🔄 **Mises à jour & maintenance régulières**
+🛡️ **Moderation**
 
-## 🚀 Installation
+* Ban, kick, mute & warn
+* Moderation logs
+* Configurable permissions
+* Anti-raid & anti-spam
+* Captcha system
 
-### 📥 Cloner le projet
+💰 **Economy**
+
+* Wallet & bank
+* Daily rewards
+* User payments
+* Leaderboards
+* Casino & virtual games
+
+🎵 **Music**
+
+* YouTube & SoundCloud
+* Queue system
+* Playlists
+* Skip, stop & playback controls
+* Voice channel management
+
+🎫 **Tickets**
+
+* Fully configurable ticket system
+* Multiple categories
+* Custom emojis & descriptions
+* Dedicated staff roles
+* Discord category support
+* Ticket logs
+* Custom panels
+* Discord Components V2
+* Automatic button / select menu system
+
+🔧 **Utilities**
+
+* Bot, server & user information
+* Ping & latency
+* Help system
+* Server management tools
+
+---
+
+## 🛠️ Tech Stack
+
+![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=for-the-badge\&logo=node.js\&logoColor=white)
+![Discord.js](https://img.shields.io/badge/Discord.js-v14-5865F2?style=for-the-badge\&logo=discord\&logoColor=white)
+![npm](https://img.shields.io/badge/npm-Package_Manager-CB3837?style=for-the-badge\&logo=npm\&logoColor=white)
+
+---
+
+## 📦 Installation
 
 ```bash
-git clone https://github.com/VOTRE-COMPTE/MultiBot.git
+git clone https://github.com/sayohelloworld/MultiBot.git
 cd MultiBot
-````
-
-### 📦 Installer les dépendances
-
-```bash
 npm install
 ```
 
-### ⚙️ Configurer le bot
+Then configure your `config.js`.
 
-La configuration de MultiBot se fait directement dans le fichier :
-
-```text
-config.js
-```
-
-Exemple de configuration :
+### ⚙️ Configuration
 
 ```js
 module.exports = {
-    token: 'VOTRE_TOKEN',
-    prefix: '!',
+    token: "YOUR_DISCORD_TOKEN",
+    clientId: "YOUR_CLIENT_ID",
+    prefix: "+",
+    embedColor: "#49ff02",
+    ownerId: "YOUR_DISCORD_ID",
+    supportServerInvite: "https://discord.gg/your-server"
 };
 ```
 
-Adaptez le fichier `config.js` aux paramètres nécessaires à votre installation.
+| Option                | Description            |
+| --------------------- | ---------------------- |
+| `token`               | Discord bot token      |
+| `clientId`            | Discord application ID |
+| `prefix`              | Command prefix         |
+| `embedColor`          | Default embed color    |
+| `ownerId`             | Bot owner's Discord ID |
+| `supportServerInvite` | Support server invite  |
 
-> 🔒 **Ne partagez jamais votre token Discord.**
->
-> Si votre `config.js` contient des informations sensibles, ajoutez-le à votre `.gitignore` avant de publier le projet.
+> ⚠️ Never share your Discord token publicly.
 
-### ▶️ Lancer le bot
+---
+
+## 🚀 Start
 
 ```bash
-node .
+node index.js
 ```
 
-## 📁 Structure du projet
+MultiBot will connect to Discord and start loading its commands and events.
+
+---
+
+## 🎫 Ticket System
+
+### Main commands
 
 ```text
-MultiBot/
-├── 📂 src/
-│   ├── 📂 commands/
-│   ├── 📂 slashcommands/
-│   ├── 📂 events/
-│   ├── 📂 structure/
-│   └── 📂 utils/
-│
-├── ⚙️ config.js
-├── 📦 package.json
-├── 📄 package-lock.json
-├── 📄 index.js
-└── 📄 README.md
++ticket panel [#channel]
++ticket addcat <name> [emoji] [description]
++ticket removecat <name>
++ticket setrole <category> @Role
++ticket removerole <category> @Role
++ticket setcategory <category> <ID>
++ticket setdesc [category] <text>
++ticket setcolor <#hex>
++ticket setlog #channel
++ticket config
 ```
 
-La structure du projet peut évoluer avec les différentes mises à jour de MultiBot.
+Each ticket category can have:
 
-## 🧩 Systèmes disponibles
+* 🏷️ Custom name
+* 🌸 Custom emoji
+* 📝 Custom description
+* 👥 Staff roles
+* 📁 Dedicated Discord category
 
-MultiBot intègre différents systèmes permettant de gérer et d'animer un serveur Discord :
+**1 category** → automatic button
+**Multiple categories** → selection menu
 
-* 🛡️ Modération
-* 🔐 Sécurité
-* 🤖 Automodération
-* ⚙️ Configuration du serveur
-* 🎫 Tickets
-* 🎁 Giveaways
-* 🎂 Anniversaires
-* 🔊 Salons vocaux
-* 💰 Économie
-* 📈 Niveaux
-* 💾 Sauvegardes
-* 💬 Confessions
-* 🏆 Points
-* 🎮 Jeux
-* 🎵 Musique
-* 🖼️ Avatars & profils
-* 🛠️ Utilitaires
-* 🎉 Fun
-* 📊 Informations
+---
 
-## 🔧 Technologies
+## 📁 Structure
 
-MultiBot utilise principalement :
-
-* 🟨 **JavaScript**
-* 🟢 **Node.js**
-* 🤖 **Discord.js**
-* 🗄️ **SQLite**
-
-## 🤝 Contribution
-
-Les contributions sont les bienvenues.
-
-Vous pouvez contribuer au projet en :
-
-* 🐛 Signalant des bugs
-* 💡 Proposant de nouvelles fonctionnalités
-* 🧩 Créant de nouvelles commandes
-* ⚡ Améliorant les performances
-* 🔧 Corrigeant ou améliorant le code
-
-Pour contribuer :
-
-```bash
-git fork
+```text
+├── index.js
+├── config.js
+├── version.js
+├── data/
+└── src/
+    ├── assets/
+    ├── commands/
+    ├── slashCommands/
+    ├── events/
+    ├── structure/
+    └── utils/
 ```
 
-Effectuez vos modifications, puis ouvrez une **Pull Request** sur le dépôt.
+| Folder           | Purpose                    |
+| ---------------- | -------------------------- |
+| `commands/`      | Prefix commands            |
+| `slashCommands/` | Slash commands             |
+| `events/`        | Discord events             |
+| `structure/`     | Handlers & core structures |
+| `utils/`         | Utility modules            |
+| `assets/`        | Bot resources              |
+| `data/`          | Data & configurations      |
 
-## 📜 Licence
+---
 
-Consultez le fichier `LICENSE` présent dans le dépôt pour connaître les conditions d'utilisation, de modification et de redistribution de MultiBot.
+## ⌨️ Commands
 
+Default prefix: `+`
+
+```text
++help
++ping
++ticket
++ticket config
 ```
+
+Commands may change between MultiBot versions.
+
+---
+
+## 🌐 Hosting
+
+MultiBot works with most Node.js-compatible hosting providers.
+
+* Railway
+* Render
+* Replit
+* OVHcloud
+* Hetzner
+* DigitalOcean
+
+For **24/7 uptime**, a VPS or cloud host is recommended.
+
+---
+
+## 🔐 Security
+
+Never commit or publish:
+
+```text
+Discord tokens
+.env files
+Private credentials
+API keys
+Sensitive information
 ```
+
+Consider adding sensitive files to `.gitignore`.
+
+---
+
+## 📜 License
+
+MultiBot is released under the **MIT License**.
+
+See [`LICENSE`](LICENSE) for more information.
+
+---
+
+<p align="center">
+  Made with ♡ by <b>Sayo</b>
+</p>
