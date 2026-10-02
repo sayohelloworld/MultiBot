@@ -15,7 +15,7 @@ const fs = require("fs");
 const path = require("path");
 
 const profileScanHandler = require("./structprofileScanHandler");
-const botProfileHandler = require("./botProfileHandler");
+const botProfileHandler = require("../structure/botProfileHandler");
 
 const file = path.join(__dirname, "../../data/questions.json");
 
