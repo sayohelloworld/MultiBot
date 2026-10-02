@@ -10,7 +10,6 @@
 > ✅ Moderation, utilities, management, fun & much more
 > ✅ **Regular updates & maintenance**
 > ✅ **Dedicated support**
-> ⚠️ ~~Bot customization~~
 
 ## ⚡ **Features**
 
