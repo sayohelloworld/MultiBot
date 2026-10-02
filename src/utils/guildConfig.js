@@ -18,6 +18,7 @@ function getDefault() {
 
     soutienRoleId: null,
     soutienStatut: null,
+    soutienTagRoleId: null,
 
     captchaEnabled: false,
     antiraidEnabled: false,
@@ -60,12 +61,26 @@ function getDefault() {
       crownSchedule: null
     },
 
-    birthdayConfig: {
-      channelId: null,
-      birthdays: {}
+    points: {},
+
+    leaderboardChannelId: null,
+    leaderboardMessageId: null,
+
+    scanProfilConfig: {
+      enabled: false,
+      scanChannelId: null,
+      resultChannelId: null,
+      leaderboardChannelId: null,
+      leaderboardMessageId: null,
+      scans: {}
     },
 
-    points: {},
+    botProfileConfig: {
+      nickname: null,
+      avatar: null,
+      banner: null,
+      bio: null
+    },
 
     logChannels: {
       member: null,
@@ -123,13 +138,21 @@ function getAll(guildId) {
         ...(saved.pointsConfig || {})
       },
 
-      birthdayConfig: {
-        ...defaults.birthdayConfig,
-        ...(saved.birthdayConfig || {}),
-        birthdays: saved.birthdayConfig?.birthdays || {}
+      points: saved.points || {},
+
+      leaderboardChannelId: saved.leaderboardChannelId || null,
+      leaderboardMessageId: saved.leaderboardMessageId || null,
+
+      scanProfilConfig: {
+        ...defaults.scanProfilConfig,
+        ...(saved.scanProfilConfig || {}),
+        scans: saved.scanProfilConfig?.scans || {}
       },
 
-      points: saved.points || {},
+      botProfileConfig: {
+        ...defaults.botProfileConfig,
+        ...(saved.botProfileConfig || {})
+      },
 
       logChannels: {
         ...defaults.logChannels,
