@@ -14,6 +14,9 @@ const {
 const fs = require("fs");
 const path = require("path");
 
+const profileScanHandler = require("./structprofileScanHandler");
+const botProfileHandler = require("./botProfileHandler");
+
 const file = path.join(__dirname, "../../data/questions.json");
 
 function loadData() {
@@ -30,7 +33,6 @@ module.exports = {
     once: false,
 
     async execute(interaction, client) {
-
         if (interaction.isChatInputCommand()) {
             const command = client.slashCommands.get(interaction.commandName);
             if (!command) return;
@@ -53,6 +55,29 @@ module.exports = {
 
         if (!interaction.guild) return;
 
+        if (
+            (
+                interaction.isButton() ||
+                interaction.isModalSubmit()
+            ) &&
+            (
+                interaction.customId.startsWith("botprofile_")
+            )
+        ) {
+            return botProfileHandler.execute(interaction);
+        }
+
+        if (
+            interaction.isButton() &&
+            (
+                interaction.customId === "scan_profil_start" ||
+                interaction.customId === "scan_profil_launch" ||
+                interaction.customId.startsWith("scan_profil_like:")
+            )
+        ) {
+            return profileScanHandler.execute(interaction);
+        }
+
         const data = loadData();
 
         if (!data[interaction.guild.id]) {
@@ -71,7 +96,6 @@ module.exports = {
         const question = data[interaction.guild.id];
 
         if (interaction.isButton()) {
-
             if (interaction.customId === "question_channel") {
                 return interaction.reply({
                     components: [
@@ -85,13 +109,14 @@ module.exports = {
                 });
             }
 
-            if ([
-                "question_title",
-                "question_description",
-                "question_answer_add",
-                "question_correct"
-            ].includes(interaction.customId)) {
-
+            if (
+                [
+                    "question_title",
+                    "question_description",
+                    "question_answer_add",
+                    "question_correct"
+                ].includes(interaction.customId)
+            ) {
                 const modal = new ModalBuilder()
                     .setCustomId(`${interaction.customId}_modal`)
                     .setTitle("Configuration question");
@@ -120,7 +145,6 @@ module.exports = {
             }
 
             if (interaction.customId === "question_publish") {
-
                 if (
                     !question.channel ||
                     !question.title ||
@@ -183,7 +207,6 @@ ${question.description ?? ""}`
             }
 
             if (interaction.customId === "question_answer") {
-
                 const modal = new ModalBuilder()
                     .setCustomId("question_answer_modal")
                     .setTitle("Réponse");
@@ -205,12 +228,7 @@ ${question.description ?? ""}`
         }
 
         if (interaction.isChannelSelectMenu()) {
-
-            if (
-                interaction.customId ===
-                "question_channel_select"
-            ) {
-
+            if (interaction.customId === "question_channel_select") {
                 question.channel = interaction.values[0];
 
                 saveData(data);
@@ -225,12 +243,7 @@ ${question.description ?? ""}`
         }
 
         if (interaction.isModalSubmit()) {
-
-            if (
-                interaction.customId ===
-                "question_answer_modal"
-            ) {
-
+            if (interaction.customId === "question_answer_modal") {
                 if (
                     question.answered.includes(
                         interaction.user.id
@@ -270,11 +283,7 @@ ${question.description ?? ""}`
                 "question_correct_modal"
             ];
 
-            if (
-                !questionModalIds.includes(
-                    interaction.customId
-                )
-            ) {
+            if (!questionModalIds.includes(interaction.customId)) {
                 return;
             }
 
@@ -294,8 +303,7 @@ ${question.description ?? ""}`
                 interaction.customId ===
                 "question_description_modal"
             ) {
-                question.description =
-                    value || null;
+                question.description = value || null;
             }
 
             if (
