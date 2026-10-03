@@ -29,6 +29,15 @@ function getDefault() {
     backupLink: null,
     serverDescription: null,
 
+    conditionsText: null,
+    hierarchieText: null,
+    permstaffText: null,
+    rankupText: null,
+    rankupStaffText: null,
+    reglementText: null,
+    reglementInactif: null,
+    reglementStaff: null,
+
     antiraidConfig: {
       spamLimit: 5,
       spamInterval: 2000,
