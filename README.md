@@ -1,53 +1,53 @@
-# 🤖 **Discover MultiBot — The all-in-one Discord bot for your server!**
+# 🤖 **Découvrez MultiBot — Le bot Discord tout-en-un pour votre serveur !**
 
-> MultiBot brings **everything your server needs** into one powerful bot: moderation, utilities, management, automation, entertainment, and much more. With **300+ commands**, MultiBot provides a complete, free, and regularly updated solution for Discord servers.
+> MultiBot regroupe **tout ce dont votre serveur a besoin** dans un seul bot : modération, utilitaires, gestion, automatisation, divertissement et bien plus encore. Avec **plus de 300 commandes**, MultiBot propose une solution complète, gratuite et régulièrement mise à jour pour les serveurs Discord.
 
 ## 🐱 **MultiBot**
 
-**100% Free**
+**100 % gratuit**
 
-> ✅ **300+ multifunctional commands**
-> ✅ Moderation, utilities, management, fun & much more
-> ✅ **Regular updates & maintenance**
-> ✅ **Dedicated support**
+> ✅ **300+ commandes multifonctions**
+> ✅ Modération, utilitaires, gestion, divertissement et bien plus
+> ✅ **Mises à jour et maintenance régulières**
+> ✅ **Support dédié**
 
-## ⚡ **Features**
+## ⚡ **Fonctionnalités**
 
-MultiBot includes a wide range of systems designed to simplify server management and improve the experience of your community.
+MultiBot propose de nombreux systèmes conçus pour simplifier la gestion de votre serveur et améliorer l'expérience de votre communauté.
 
-* 🛡️ Moderation & AutoMod
-* ⚙️ Server configuration
-* 🎫 Ticket system
-* 🎉 Giveaway system
-* 🎂 Birthday system
-* 🔊 Voice channel management
-* 💰 Economy system
-* ⭐ Leveling & points
-* 🎵 Music
-* 🎮 Games & fun commands
-* 📊 Utilities & information
-* 🤖 Automation
-* 🔐 Security features
-* 🧰 Backup & server management
-* 👤 Avatar & profile tools
-* And much more
+* 🛡️ Modération & AutoMod
+* ⚙️ Configuration du serveur
+* 🎫 Système de tickets
+* 🎉 Système de giveaways
+* 🎂 Système d'anniversaires
+* 🔊 Gestion des salons vocaux
+* 💰 Système d'économie
+* ⭐ Niveaux & points
+* 🎵 Musique
+* 🎮 Jeux & commandes fun
+* 📊 Utilitaires & informations
+* 🤖 Automatisation
+* 🔐 Fonctionnalités de sécurité
+* 🧰 Sauvegardes & gestion du serveur
+* 👤 Outils d'avatars & profils
+* Et bien plus encore
 
 ## 📦 **Installation**
 
-### Requirements
+### Prérequis
 
-* [Node.js](https://nodejs.org/) **v18 or newer**
-* A Discord application and bot
-* A Discord server where you have permission to add the bot
+* [Node.js](https://nodejs.org/) **v18 ou plus récent**
+* Une application Discord avec un bot
+* Un serveur Discord sur lequel vous avez l'autorisation d'ajouter le bot
 
-### Clone the repository
+### Cloner le dépôt
 
 ```bash
 git clone https://github.com/sayohelloworld/MultiBot.git
 cd MultiBot
 ```
 
-### Install dependencies
+### Installer les dépendances
 
 ```bash
 npm install
@@ -55,9 +55,9 @@ npm install
 
 ## ⚙️ **Configuration**
 
-Before starting the bot, create or edit the `config.js` file.
+Avant de démarrer le bot, créez ou modifiez le fichier `config.js`.
 
-Example:
+Exemple :
 
 ```js
 module.exports = {
@@ -66,36 +66,35 @@ module.exports = {
   clientId: "ID_DU_BOT",
   embedColor: "#49ff02",
   ownerId: "VOTRE_ID_DISCORD",
-  supportServerInvite: "https://discord.gg/votre-serveur",
-  clientId: "ID_DU_BOT"
+  supportServerInvite: "https://discord.gg/votre-serveur"
 };
 ```
 
-Replace the values with your own Discord bot credentials.
+Remplacez les valeurs par vos propres informations Discord.
 
-> ⚠️ **Never publish your bot token or any other private credentials on GitHub.**
+> ⚠️ **Ne publiez jamais le token de votre bot ni aucune autre information privée sur GitHub.**
 >
-> If you use a public repository, make sure `config.js` is included in `.gitignore` or use environment variables instead.
+> Si vous utilisez un dépôt public, assurez-vous que `config.js` est présent dans votre `.gitignore` ou utilisez des variables d'environnement.
 
-## 🚀 **Deploy**
+## 🚀 **Déploiement**
 
-After configuring your bot, deploy your commands with:
+Après avoir configuré votre bot, déployez les commandes avec :
 
 ```bash
 node deploy-commands.js
 ```
 
-Then start MultiBot:
+Puis démarrez MultiBot :
 
 ```bash
 node index.js
 ```
 
-If your project uses different entry points or deployment scripts, replace the filenames with the ones used by your installation.
+Si votre installation utilise d'autres fichiers de démarrage ou de déploiement, adaptez les noms de fichiers à votre configuration.
 
-### 🔄 **Running with PM2**
+### 🔄 **Utilisation avec PM2**
 
-For a permanent deployment, you can use PM2:
+Pour maintenir le bot actif en permanence, vous pouvez utiliser PM2 :
 
 ```bash
 npm install -g pm2
@@ -103,38 +102,38 @@ pm2 start index.js --name MultiBot
 pm2 save
 ```
 
-To restart the bot:
+Pour redémarrer le bot :
 
 ```bash
 pm2 restart MultiBot
 ```
 
-To view the logs:
+Pour consulter les logs :
 
 ```bash
 pm2 logs MultiBot
 ```
 
-## 🤝 **Contributing**
+## 🤝 **Contribuer**
 
-Contributions, suggestions and improvements are welcome.
+Les contributions, suggestions et améliorations sont les bienvenues.
 
-If you find a bug or have an idea for a new feature, feel free to open an **Issue** or submit a **Pull Request**.
+Si vous trouvez un bug ou avez une idée pour une nouvelle fonctionnalité, vous pouvez ouvrir une **Issue** ou proposer une **Pull Request**.
 
-## 📄 **License**
+## 📄 **Licence**
 
-MultiBot is distributed under the **MIT License**.
+MultiBot est distribué sous **licence MIT**.
 
-You are free to use, modify, distribute and build upon the project in accordance with the terms of the MIT License.
+Vous êtes libre d'utiliser, modifier, distribuer et améliorer le projet conformément aux conditions de la licence MIT.
 
-See the [`LICENSE`](LICENSE) file for the complete license text.
+Consultez le fichier [`LICENSE`](LICENSE) pour obtenir le texte complet de la licence.
 
 ---
 
-## ❤️ **Made with heart**
+## ❤️ **Développé avec le cœur**
 
-> MultiBot is developed with **passion, dedication and a lot of heart**.
+> MultiBot est développé avec **passion, détermination et beaucoup de cœur**.
 >
-> Built to learn, improve, experiment and create a complete Discord bot from the ground up.
+> Créé pour apprendre, progresser, expérimenter et construire un bot Discord complet de A à Z.
 >
-> **Made with ❤️ for Discord communities.**
+> **Fait avec ❤️ pour les communautés Discord.**
