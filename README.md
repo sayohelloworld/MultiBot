@@ -44,7 +44,7 @@ MultiBot propose de nombreux systèmes conçus pour simplifier la gestion de vot
 
 ```bash
 git clone https://github.com/sayohelloworld/MultiBot.git
-cd MultiBot
+cd MultiBot (vous pouvez ensuite renommer ce dossier dans votre PC hyn)
 ```
 
 ### Installer les dépendances
@@ -98,20 +98,20 @@ Pour maintenir le bot actif en permanence, vous pouvez utiliser PM2 :
 
 ```bash
 npm install -g pm2
-pm2 start index.js --name MultiBot
+pm2 start index.js --name nom-que-vous-voulez
 pm2 save
 ```
 
 Pour redémarrer le bot :
 
 ```bash
-pm2 restart MultiBot
+pm2 restart nom-de-votre-bot
 ```
 
 Pour consulter les logs :
 
 ```bash
-pm2 logs MultiBot
+pm2 logs nom-de-votre-bot
 ```
 
 ## 🤝 **Contribuer**
