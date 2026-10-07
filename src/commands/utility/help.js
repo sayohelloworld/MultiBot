@@ -32,9 +32,10 @@ const categoryNames = {
     owner: "👑・Owner",
     pfps: "🖼️・PFPs",
     points: "⭐・Points",
+    profile: "📝・Profils",
     roblox: "🎮・Roblox",
     utility: "🛠️・Utilitaires",
-    voice: "🎙️・Vocal",
+    voice: "🎤・Vocal",
 };
 
 module.exports = {
