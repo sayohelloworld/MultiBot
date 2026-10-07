@@ -1,40 +1,62 @@
-const { PermissionsBitField, EmbedBuilder } = require('discord.js');
+const {
+    PermissionsBitField
+} = require("discord.js");
 
 module.exports = {
-  name: 'addrole',
-  description: 'Ajoute un rôle à un membre mentionné',
-  async execute(client, message, args) {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
-      return message.reply("🚫 Vous n'avez pas la permission de gérer les rôles.");
+    name: "deleterole",
+    description: "Supprime un rôle.",
+
+    async execute(client, message, args) {
+        if (!message.guild) {
+            return message.reply("❌ Cette commande doit être utilisée sur un serveur.");
+        }
+
+        if (!message.member.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
+            return message.reply("❌ Tu dois avoir la permission de gérer les rôles.");
+        }
+
+        const role =
+            message.mentions.roles.first() ||
+            message.guild.roles.cache.get(args[0]);
+
+        if (!role) {
+            return message.reply("❌ Mentionne le rôle à supprimer.");
+        }
+
+        if (role.id === message.guild.id) {
+            return message.reply("❌ Le rôle @everyone ne peut pas être supprimé.");
+        }
+
+        if (role.managed) {
+            return message.reply("❌ Ce rôle est géré par Discord et ne peut pas être supprimé.");
+        }
+
+        const botMember = message.guild.members.me;
+
+        if (!botMember) {
+            return message.reply("❌ Impossible de récupérer mon membre.");
+        }
+
+        if (!botMember.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
+            return message.reply("❌ Je n'ai pas la permission de gérer les rôles.");
+        }
+
+        if (role.position >= botMember.roles.highest.position) {
+            return message.reply("❌ Je ne peux pas supprimer ce rôle.");
+        }
+
+        if (role.position >= message.member.roles.highest.position) {
+            return message.reply("❌ Tu ne peux pas supprimer ce rôle.");
+        }
+
+        const name = role.name;
+
+        await role.delete(
+            `Suppression de rôle par ${message.author.tag}`
+        );
+
+        return message.reply(
+            `✅ Le rôle **${name}** a été supprimé.`
+        );
     }
-    const member = message.mentions.members.first();
-    const role = message.mentions.roles.first();
-    if (!member) {
-      return message.reply("❌ Vous devez mentionner un membre valide.");
-    }
-    if (!role) {
-      return message.reply("❌ Vous devez mentionner un rôle valide.");
-    }
-    if (member.roles.cache.has(role.id)) {
-      return message.reply(`⚠ Le membre **${member.user.tag}** possède déjà le rôle **${role.name}**.`);
-    }
-    if (message.member.roles.highest.comparePositionTo(role) <= 0) {
-      return message.reply("❌ Vous ne pouvez pas attribuer ce rôle car il est supérieur ou égal à votre rôle.");
-    }
-    if (message.guild.me.roles.highest.comparePositionTo(role) <= 0) {
-      return message.reply("❌ Je ne peux pas attribuer ce rôle car il est supérieur ou égal à mon rôle.");
-    }
-    try {
-      await member.roles.add(role);
-      const embed = new EmbedBuilder()
-        .setColor('#00ff00')
-        .setTitle("✅ Rôle attribué avec succès !")
-        .setDescription(`Le rôle **${role.name}** a été ajouté à **${member.user.tag}**`)
-        .setFooter({ text: "Gestion des rôles", iconURL: message.guild.iconURL({ dynamic: true }) });
-      message.channel.send({ embeds: [embed], allowedMentions: { parse: [] } });
-    } catch (error) {
-      console.error("❌ Erreur lors de l'attribution du rôle :", error);
-      message.reply("⚠ Une erreur s'est produite lors de l'attribution du rôle. Vérifiez mes permissions ou contactez un administrateur.");
-    }
-  },
 };
