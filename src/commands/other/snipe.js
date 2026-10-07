@@ -1,6 +1,10 @@
-const { EmbedBuilder } = require('discord.js');
+const {
+    MessageFlags,
+    ContainerBuilder,
+    TextDisplayBuilder,
+    SeparatorBuilder
+} = require('discord.js');
 
-// Store global au fichier
 const deletedMessages = new Map();
 
 module.exports = {
@@ -8,7 +12,6 @@ module.exports = {
     description: 'Affiche les messages supprimés récemment',
 
     init(client) {
-        // On évite de register plusieurs fois l'event
         if (client._snipeInitialized) return;
         client._snipeInitialized = true;
 
@@ -28,37 +31,75 @@ module.exports = {
                 createdAt: message.createdTimestamp
             });
 
-            // Limite à 10 messages
-            if (snipes.length > 10) snipes.pop();
+            if (snipes.length > 10) {
+                snipes.pop();
+            }
         });
     },
 
     async execute(client, message, args) {
-
-        // Initialise l’event si pas déjà fait
         this.init(client);
 
         const snipes = deletedMessages.get(message.channel.id);
 
         if (!snipes || snipes.length === 0) {
-            return message.reply("Aucun message supprimé récemment dans ce salon.");
+            const container = new ContainerBuilder()
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent(
+                        '## Message supprimé\n\nAucun message supprimé récemment dans ce salon.'
+                    )
+                );
+
+            return message.reply({
+                components: [container],
+                flags: MessageFlags.IsComponentsV2
+            });
         }
 
         const index = parseInt(args[0]) - 1 || 0;
 
         if (index < 0 || index >= snipes.length) {
-            return message.reply(`Il y a seulement ${snipes.length} message(s) supprimé(s).`);
+            const container = new ContainerBuilder()
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent(
+                        `## Message supprimé\n\nIl y a seulement **${snipes.length}** message(s) supprimé(s).`
+                    )
+                );
+
+            return message.reply({
+                components: [container],
+                flags: MessageFlags.IsComponentsV2
+            });
         }
 
         const msg = snipes[index];
 
-        const embed = new EmbedBuilder()
-            .setAuthor({ name: msg.author })
-            .setDescription(msg.content || "*Message vide*")
-            .setColor("Red")
-            .setFooter({ text: `Message ${index + 1}/${snipes.length}` })
-            .setTimestamp(msg.createdAt);
+        const container = new ContainerBuilder()
+            .addTextDisplayComponents(
+                new TextDisplayBuilder().setContent(
+                    `## Message supprimé\n\n**Auteur :** ${msg.author}`
+                )
+            )
+            .addSeparatorComponents(
+                new SeparatorBuilder()
+            )
+            .addTextDisplayComponents(
+                new TextDisplayBuilder().setContent(
+                    `**Contenu :**\n${msg.content || '*Message vide*'}`
+                )
+            )
+            .addSeparatorComponents(
+                new SeparatorBuilder()
+            )
+            .addTextDisplayComponents(
+                new TextDisplayBuilder().setContent(
+                    `Message **${index + 1}/${snipes.length}**`
+                )
+            );
 
-        message.channel.send({ embeds: [embed] });
+        return message.channel.send({
+            components: [container],
+            flags: MessageFlags.IsComponentsV2
+        });
     }
 };
