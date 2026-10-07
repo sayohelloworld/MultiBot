@@ -4,9 +4,6 @@ const {
   Partials,
   Collection,
   EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
   REST,
   Routes,
 } = require("discord.js");
@@ -15,7 +12,6 @@ const config = require("./config");
 const guildConfig = require("./src/utils/guildConfig");
 const statsTracker = require("./src/utils/statsTracker");
 const snipe = require("./src/commands/utility/snipe");
-const { Player } = require("discord-player");
 
 function logAction(message) {
   const date = new Date().toISOString();
@@ -32,10 +28,6 @@ const client = new Client({
     GatewayIntentBits.GuildVoiceStates,
   ],
   partials: [Partials.GuildMember],
-});
-
-client.player = new Player(client, {
-  skipFFmpeg: false,
 });
 
 client.commands = new Collection();
@@ -150,106 +142,40 @@ client.once("ready", async () => {
   });
 });
 
-client.player.events.on("playerStart", (queue, track) => {
-  if (queue.metadata?.channel) {
-    queue.metadata.channel
-      .send(`▶️ ${track.title}`)
-      .catch(() => {});
-  }
-});
-
-client.player.events.on("error", (queue, error) => {
-  console.error("[MUSIC ERROR]", error);
-});
-
-client.player.events.on(
-  "playerError",
-  (queue, error, track) => {
-    console.error(
-      "[MUSIC PLAYER ERROR]",
-      track?.title || "Track inconnue",
-      error
-    );
-  }
-);
-
 client.on("presenceUpdate", async (_, newPresence) => {
   const member = newPresence?.member;
 
-  if (!member || !member.guild) return;
-
-  if (client.checkMember) {
-    const cfg = guildConfig.getAll(member.guild.id);
-
-    await client.checkMember(member, cfg).catch(() => {});
+  if (!member || !member.guild || member.user.bot) {
+    return;
   }
+
+  if (!client.checkMember) {
+    return;
+  }
+
+  const cfg = guildConfig.getAll(member.guild.id);
+
+  if (!cfg.soutienRoleId || !cfg.soutienStatut) {
+    return;
+  }
+
+  await client.checkMember(
+    member,
+    cfg,
+    newPresence
+  ).catch(() => {});
 });
 
 client.on("guildMemberAdd", async (member) => {
   const cfg = guildConfig.getAll(member.guild.id);
 
-  const createdAt = member.user.createdAt;
-  const now = new Date();
-
-  const diffDays = Math.floor(
-    (now - createdAt) / (1000 * 60 * 60 * 24)
-  );
-
-  const diffYears = Math.floor(diffDays / 365);
-
-  const ageText =
-    diffYears > 0
-      ? `${diffYears} ans`
-      : `${diffDays} jours`;
-
   const memberCount = member.guild.memberCount;
 
-  let inviterText = "Invitation inconnue";
-
-  if (member.user.bot) {
-    const adder = await getBotAdder(
-      member.guild,
-      member.id
-    );
-
-    inviterText = adder
-      ? `Bot ajouté par **${adder.tag}**`
-      : "Bot ajouté (source inconnue)";
-  } else {
-    const usedInvite = await findUsedInvite(member.guild);
-
-    inviterText = usedInvite
-      ? `Invité par **${usedInvite.inviter.tag}**`
-      : "Invitation inconnue";
-  }
-
-  const welcomeEmbed = new EmbedBuilder()
-    .setColor("#00ff00")
-    .setTitle("👋 Nouveau membre")
-    .setDescription(
-      `**${member} vient de nous rejoindre**\n\n` +
-      `Compte créé il y a **${ageText}**\n` +
-      `${inviterText}`
-    )
-    .setThumbnail(
-      member.user.displayAvatarURL({
-        dynamic: true,
-      })
-    )
-    .setFooter({
-      text: member.guild.name,
-      iconURL: member.guild.iconURL({
-        dynamic: true,
-      }),
-    });
-
-  const row = new ActionRowBuilder().addComponents(
-    new ButtonBuilder()
-      .setCustomId("member_count")
-      .setLabel(`👥 ${memberCount} membres`)
-      .setStyle(ButtonStyle.Secondary)
-      .setDisabled(true)
-  );
+  const welcomeMessage =
+    `<a:cat:1548633716677677066> Bienvenue ${member} sur **${member.guild.name}** !\n` +
+    `> <a:mario_spinning_star:1554974593867976804> Nous sommes maintenant **${memberCount} membres** sur le serveur.\n\n` +
+    `> <a:Chat_MyFriendForever:1528327830511947896> \`/bloxet\` en statut pour perm image.\n` +
+    `> <:regle:1554975038694883350> Je t'invite à lire le règlement dans <#1543748916552663070> afin d'éviter toute sanction, et à récupérer tes rôles dans <id:customize>`;
 
   if (cfg.welcomeChannelId) {
     const channel = member.guild.channels.cache.get(
@@ -257,18 +183,19 @@ client.on("guildMemberAdd", async (member) => {
     );
 
     if (channel) {
-      let content = "";
+      let content = welcomeMessage;
 
       if (cfg.welcomePingRoleId) {
-        content = `<@&${cfg.welcomePingRoleId}>`;
+        content =
+          `<@&${cfg.welcomePingRoleId}>\n\n` +
+          welcomeMessage;
       }
 
       channel
         .send({
           content,
-          embeds: [welcomeEmbed],
-          components: [row],
           allowedMentions: {
+            users: [member.id],
             roles: cfg.welcomePingRoleId
               ? [cfg.welcomePingRoleId]
               : [],
@@ -456,7 +383,7 @@ client.on(
       if (session) {
         statsTracker.addVoiceSession({
           guildId: session.guildId,
-          userId: session.userId,
+          userId: member.id,
           channelId: session.channelId,
           startedAt: session.startedAt,
           endedAt: Date.now(),
@@ -508,6 +435,26 @@ process.on("SIGINT", () => {
 process.on("SIGTERM", () => {
   client.destroy();
   process.exit(0);
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("⚠️ [Anti-Crash] Rejet non géré :", reason);
+});
+
+process.on("uncaughtException", (err, origin) => {
+  console.error("⚠️ [Anti-Crash] Exception non capturée :", err);
+});
+
+process.on("uncaughtExceptionMonitor", (err, origin) => {
+  console.error("⚠️ [Anti-Crash] Surveillance d'exception :", err);
+});
+
+process.on("warning", (warning) => {
+  console.warn(
+    "⚠️ [Avertissement] :",
+    warning.name,
+    warning.message
+  );
 });
 
 client.login(config.token);
