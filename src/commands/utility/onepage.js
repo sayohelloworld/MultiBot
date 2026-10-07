@@ -2,26 +2,29 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentTyp
 const guildConfig = require("../../utils/guildConfig");
 
 const categoryNames = {
-    antiraid: "🛡️・AntiRaid",
+    automod: "🛡️・Automod",
     avatar: "🎨・Avatars",
     backup: "💾・Backups",
     birthday: "🎂・Anniversaires",
     confession: "💌・Confessions",
-    config: "⚙️・Configuration",
+    guildconfig: "⚙️・Guild Config",
     economy: "💰・Economie",
     fun: "🎉・Fun",
     games: "🎮・Jeux",
     giveaway: "🎁・Giveaways",
+    honeypot: "🐝・Honeypot",
     info: "🔍・Informations",
     levels: "📈・Level",
     moderation: "⚔️・Moderation",
     music: "🎵・Musique",
     other: "🔧・Autres",
     owner: "👑・Owner",
+    pfps: "🖼️・PFPs",
     points: "⭐・Points",
+    profile: "📝・Profils",
     roblox: "🎮・Roblox",
     utility: "🛠️・Utilitaires",
-    voice: "🎙️・Vocal",
+    voice: "🎤・Vocal",
 };
 
 module.exports = {
