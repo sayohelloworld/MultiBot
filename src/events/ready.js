@@ -18,6 +18,7 @@ const {
 const guildConfig = require('../utils/guildConfig');
 const pointsCommand = require('../commands/points/points');
 const config = require('../../config');
+const gw = require('../utils/giveawayManager');
 
 const statuses = [
   '+help'
@@ -26,6 +27,11 @@ const statuses = [
 let currentStatus = 0;
 
 function updateStatus(client) {
+ 
+  if (client.customActivity) {
+    return;
+  }
+
   const status = statuses[currentStatus];
 
   client.user.setPresence({
@@ -33,10 +39,11 @@ function updateStatus(client) {
       {
         name: status,
         type: ActivityType.Streaming,
-        url: 'https://www.twitch.tv/xbloxet'
+        url: 'https://www.twitch.tv/yhlel'
       }
     ],
-    status: 'online'
+   
+    status: client.presenceStatus || 'online'
   });
 
   currentStatus = (currentStatus + 1) % statuses.length;
@@ -341,6 +348,7 @@ module.exports = {
     );
 
     client.checkMember = checkMember;
+    client.updateStatus = updateStatus;
 
     updateStatus(client);
 
@@ -359,6 +367,8 @@ module.exports = {
     if (pointsCommand.startLeaderboardUpdater) {
       pointsCommand.startLeaderboardUpdater(client);
     }
+
+    gw.startTimer(client);
 
     client.on('guildCreate', async (guild) => {
       await notifyBotOwner(client, guild);
