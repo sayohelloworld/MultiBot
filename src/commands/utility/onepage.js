@@ -6,6 +6,7 @@ const categoryNames = {
     avatar: "🎨・Avatars",
     backup: "💾・Backups",
     birthday: "🎂・Anniversaires",
+    botcontrol: "🤖・Configuration du bot",
     confession: "💌・Confessions",
     guildconfig: "⚙️・Guild Config",
     economy: "💰・Economie",
