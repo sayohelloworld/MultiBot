@@ -14,8 +14,9 @@ const {
 const fs = require("fs");
 const path = require("path");
 
-const profileScanHandler = require("./structprofileScanHandler");
+const profileScanHandler = require("./profileScanHandler");
 const botProfileHandler = require("../structure/botProfileHandler");
+const welcomeHandler = require("../structure/welcomeHandler");
 
 const file = path.join(__dirname, "../../data/questions.json");
 
@@ -34,7 +35,10 @@ module.exports = {
 
     async execute(interaction, client) {
         if (interaction.isChatInputCommand()) {
-            const command = client.slashCommands.get(interaction.commandName);
+            const command = client.slashCommands.get(
+                interaction.commandName
+            );
+
             if (!command) return;
 
             try {
@@ -55,14 +59,37 @@ module.exports = {
 
         if (!interaction.guild) return;
 
+        const welcomeIds = [
+            "welcome_channel",
+            "welcome_message",
+            "welcome_ping_role",
+            "welcome_ping_toggle",
+            "welcome_status_toggle",
+            "welcome_preview",
+            "welcome_reset",
+            "welcome_channel_select",
+            "welcome_ping_role_select",
+            "welcome_message_modal"
+        ];
+
+        if (
+            (
+                interaction.isButton() ||
+                interaction.isModalSubmit() ||
+                interaction.isChannelSelectMenu() ||
+                interaction.isRoleSelectMenu()
+            ) &&
+            welcomeIds.includes(interaction.customId)
+        ) {
+            return welcomeHandler.execute(interaction);
+        }
+
         if (
             (
                 interaction.isButton() ||
                 interaction.isModalSubmit()
             ) &&
-            (
-                interaction.customId.startsWith("botprofile_")
-            )
+            interaction.customId.startsWith("botprofile_")
         ) {
             return botProfileHandler.execute(interaction);
         }
@@ -118,7 +145,9 @@ module.exports = {
                 ].includes(interaction.customId)
             ) {
                 const modal = new ModalBuilder()
-                    .setCustomId(`${interaction.customId}_modal`)
+                    .setCustomId(
+                        `${interaction.customId}_modal`
+                    )
                     .setTitle("Configuration question");
 
                 const input = new TextInputBuilder()
@@ -134,7 +163,8 @@ module.exports = {
                     )
                     .setStyle(TextInputStyle.Paragraph)
                     .setRequired(
-                        interaction.customId !== "question_description"
+                        interaction.customId !==
+                        "question_description"
                     );
 
                 modal.addComponents(
@@ -228,7 +258,10 @@ ${question.description ?? ""}`
         }
 
         if (interaction.isChannelSelectMenu()) {
-            if (interaction.customId === "question_channel_select") {
+            if (
+                interaction.customId ===
+                "question_channel_select"
+            ) {
                 question.channel = interaction.values[0];
 
                 saveData(data);
