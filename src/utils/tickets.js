@@ -1,158 +1,47 @@
+const fs = require('fs');
 const path = require('path');
-const Database = require('better-sqlite3');
 
 const DATA_DIR = path.join(__dirname, '../../data');
-const DB_FILE = path.join(DATA_DIR, 'ticket.sqlite');
+const TICKETS_FILE = path.join(DATA_DIR, 'tickets.json');
 
-const db = new Database(DB_FILE);
+function ensureDataDir() {
+    if (!fs.existsSync(DATA_DIR)) {
+        fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+}
 
-db.pragma('journal_mode = WAL');
+function load() {
+    ensureDataDir();
 
-db.exec(`
-    CREATE TABLE IF NOT EXISTS tickets (
-        channel_id TEXT PRIMARY KEY,
-        guild_id TEXT NOT NULL,
-        user_id TEXT NOT NULL,
-        category_id TEXT,
-        category_name TEXT,
-        status TEXT NOT NULL DEFAULT 'open',
-        number INTEGER NOT NULL,
-        created_at INTEGER NOT NULL,
-        accepted_by TEXT,
-        closed_by TEXT,
-        close_reason TEXT,
-        closed_at INTEGER,
-        transcript_sent INTEGER NOT NULL DEFAULT 0
-    );
+    if (!fs.existsSync(TICKETS_FILE)) {
+        return {};
+    }
 
-    CREATE INDEX IF NOT EXISTS idx_tickets_guild
-    ON tickets(guild_id);
+    try {
+        const data = JSON.parse(
+            fs.readFileSync(TICKETS_FILE, 'utf8') || '{}'
+        );
 
-    CREATE INDEX IF NOT EXISTS idx_tickets_user
-    ON tickets(user_id);
+        return data && typeof data === 'object' ? data : {};
+    } catch (error) {
+        console.error('[TICKETS] Erreur lecture tickets.json :', error);
+        return {};
+    }
+}
 
-    CREATE INDEX IF NOT EXISTS idx_tickets_status
-    ON tickets(status);
+function save(data) {
+    ensureDataDir();
 
-    CREATE INDEX IF NOT EXISTS idx_tickets_guild_user
-    ON tickets(guild_id, user_id);
-`);
-
-const statements = {
-    get: db.prepare(`
-        SELECT
-            channel_id AS channelId,
-            guild_id AS guildId,
-            user_id AS userId,
-            category_id AS categoryId,
-            category_name AS categoryName,
-            status,
-            number,
-            created_at AS createdAt,
-            accepted_by AS acceptedBy,
-            closed_by AS closedBy,
-            close_reason AS closeReason,
-            closed_at AS closedAt,
-            transcript_sent AS transcriptSent
-        FROM tickets
-        WHERE channel_id = ?
-    `),
-
-    getAll: db.prepare(`
-        SELECT
-            channel_id AS channelId,
-            guild_id AS guildId,
-            user_id AS userId,
-            category_id AS categoryId,
-            category_name AS categoryName,
-            status,
-            number,
-            created_at AS createdAt,
-            accepted_by AS acceptedBy,
-            closed_by AS closedBy,
-            close_reason AS closeReason,
-            closed_at AS closedAt,
-            transcript_sent AS transcriptSent
-        FROM tickets
-        ORDER BY number ASC
-    `),
-
-    insert: db.prepare(`
-        INSERT INTO tickets (
-            channel_id,
-            guild_id,
-            user_id,
-            category_id,
-            category_name,
-            status,
-            number,
-            created_at,
-            accepted_by,
-            closed_by,
-            close_reason,
-            closed_at,
-            transcript_sent
-        )
-        VALUES (
-            @channelId,
-            @guildId,
-            @userId,
-            @categoryId,
-            @categoryName,
-            @status,
-            @number,
-            @createdAt,
-            @acceptedBy,
-            @closedBy,
-            @closeReason,
-            @closedAt,
-            @transcriptSent
-        )
-    `),
-
-    update: db.prepare(`
-        UPDATE tickets
-        SET
-            guild_id = COALESCE(@guildId, guild_id),
-            user_id = COALESCE(@userId, user_id),
-            category_id = COALESCE(@categoryId, category_id),
-            category_name = COALESCE(@categoryName, category_name),
-            status = COALESCE(@status, status),
-            number = COALESCE(@number, number),
-            created_at = COALESCE(@createdAt, created_at),
-            accepted_by = CASE
-                WHEN @acceptedBy IS NOT NULL THEN @acceptedBy
-                ELSE accepted_by
-            END,
-            closed_by = CASE
-                WHEN @closedBy IS NOT NULL THEN @closedBy
-                ELSE closed_by
-            END,
-            close_reason = CASE
-                WHEN @closeReason IS NOT NULL THEN @closeReason
-                ELSE close_reason
-            END,
-            closed_at = CASE
-                WHEN @closedAt IS NOT NULL THEN @closedAt
-                ELSE closed_at
-            END,
-            transcript_sent = CASE
-                WHEN @transcriptSent IS NOT NULL THEN @transcriptSent
-                ELSE transcript_sent
-            END
-        WHERE channel_id = @channelId
-    `),
-
-    remove: db.prepare(`
-        DELETE FROM tickets
-        WHERE channel_id = ?
-    `),
-
-    count: db.prepare(`
-        SELECT COUNT(*) AS count
-        FROM tickets
-    `)
-};
+    try {
+        fs.writeFileSync(
+            TICKETS_FILE,
+            JSON.stringify(data, null, 2),
+            'utf8'
+        );
+    } catch (error) {
+        console.error('[TICKETS] Erreur sauvegarde tickets.json :', error);
+    }
+}
 
 function normalizeTicket(ticket) {
     if (!ticket) return null;
@@ -170,153 +59,92 @@ function normalizeTicket(ticket) {
         closedBy: ticket.closedBy ?? null,
         closeReason: ticket.closeReason ?? null,
         closedAt: ticket.closedAt ?? null,
-        transcriptSent: ticket.transcriptSent ? true : false
+        transcriptSent: Boolean(ticket.transcriptSent)
     };
 }
 
 function get(channelId) {
-    const ticket = statements.get.get(channelId);
+    const data = load();
 
-    return ticket || null;
-}
-
-function create(channelId, data) {
-    const ticket = normalizeTicket({
-        ...data,
-        channelId
-    });
-
-    statements.insert.run({
-        channelId: ticket.channelId,
-        guildId: ticket.guildId,
-        userId: ticket.userId,
-        categoryId: ticket.categoryId,
-        categoryName: ticket.categoryName,
-        status: ticket.status,
-        number: ticket.number,
-        createdAt: ticket.createdAt,
-        acceptedBy: ticket.acceptedBy,
-        closedBy: ticket.closedBy,
-        closeReason: ticket.closeReason,
-        closedAt: ticket.closedAt,
-        transcriptSent: ticket.transcriptSent ? 1 : 0
-    });
-
-    return get(channelId);
-}
-
-function update(channelId, fields) {
-    const existing = get(channelId);
-
-    if (!existing) {
+    if (!data[channelId]) {
         return null;
     }
 
-    const values = {
-        channelId,
+    return normalizeTicket(data[channelId]);
+}
 
-        guildId:
-            Object.prototype.hasOwnProperty.call(fields, 'guildId')
-                ? fields.guildId
-                : null,
+function create(channelId, ticketData) {
+    const data = load();
 
-        userId:
-            Object.prototype.hasOwnProperty.call(fields, 'userId')
-                ? fields.userId
-                : null,
+    const ticket = normalizeTicket({
+        ...ticketData,
+        channelId
+    });
 
-        categoryId:
-            Object.prototype.hasOwnProperty.call(fields, 'categoryId')
-                ? fields.categoryId
-                : null,
+    data[channelId] = ticket;
 
-        categoryName:
-            Object.prototype.hasOwnProperty.call(fields, 'categoryName')
-                ? fields.categoryName
-                : null,
+    save(data);
 
-        status:
-            Object.prototype.hasOwnProperty.call(fields, 'status')
-                ? fields.status
-                : null,
+    return ticket;
+}
 
-        number:
-            Object.prototype.hasOwnProperty.call(fields, 'number')
-                ? fields.number
-                : null,
+function update(channelId, fields) {
+    const data = load();
 
-        createdAt:
-            Object.prototype.hasOwnProperty.call(fields, 'createdAt')
-                ? fields.createdAt
-                : null,
+    if (!data[channelId]) {
+        return null;
+    }
 
-        acceptedBy:
-            Object.prototype.hasOwnProperty.call(fields, 'acceptedBy')
-                ? fields.acceptedBy
-                : null,
+    const current = normalizeTicket(data[channelId]);
 
-        closedBy:
-            Object.prototype.hasOwnProperty.call(fields, 'closedBy')
-                ? fields.closedBy
-                : null,
+    const updated = normalizeTicket({
+        ...current,
+        ...fields,
+        channelId
+    });
 
-        closeReason:
-            Object.prototype.hasOwnProperty.call(fields, 'closeReason')
-                ? fields.closeReason
-                : null,
+    data[channelId] = updated;
 
-        closedAt:
-            Object.prototype.hasOwnProperty.call(fields, 'closedAt')
-                ? fields.closedAt
-                : null,
+    save(data);
 
-        transcriptSent:
-            Object.prototype.hasOwnProperty.call(fields, 'transcriptSent')
-                ? (fields.transcriptSent ? 1 : 0)
-                : null
-    };
-
-    statements.update.run(values);
-
-    return get(channelId);
+    return updated;
 }
 
 function remove(channelId) {
-    return statements.remove.run(channelId);
+    const data = load();
+
+    if (!data[channelId]) {
+        return false;
+    }
+
+    delete data[channelId];
+
+    save(data);
+
+    return true;
 }
 
 function getAll() {
-    const rows = statements.getAll.all();
-
+    const data = load();
     const result = {};
 
-    for (const ticket of rows) {
-        result[ticket.channelId] = {
-            channelId: ticket.channelId,
-            guildId: ticket.guildId,
-            userId: ticket.userId,
-            categoryId: ticket.categoryId,
-            categoryName: ticket.categoryName,
-            status: ticket.status,
-            number: ticket.number,
-            createdAt: ticket.createdAt,
-            acceptedBy: ticket.acceptedBy,
-            closedBy: ticket.closedBy,
-            closeReason: ticket.closeReason,
-            closedAt: ticket.closedAt,
-            transcriptSent: Boolean(ticket.transcriptSent)
-        };
+    for (const [channelId, ticket] of Object.entries(data)) {
+        result[channelId] = normalizeTicket({
+            ...ticket,
+            channelId: ticket.channelId || channelId
+        });
     }
 
     return result;
 }
 
 function count() {
-    return statements.count.get().count;
+    return Object.keys(load()).length;
 }
 
 function close() {
-    db.close();
+   
+   
 }
 
 module.exports = {
