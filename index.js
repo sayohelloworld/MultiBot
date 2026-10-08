@@ -171,37 +171,73 @@ client.on("guildMemberAdd", async (member) => {
 
   const memberCount = member.guild.memberCount;
 
-  const welcomeMessage =
-    `<a:cat:1548633716677677066> Bienvenue ${member} sur **${member.guild.name}** !\n` +
-    `> <a:mario_spinning_star:1554974593867976804> Nous sommes maintenant **${memberCount} membres** sur le serveur.\n\n` +
-    `> <a:Chat_MyFriendForever:1528327830511947896> \`/bloxet\` en statut pour perm image.\n` +
-    `> <:regle:1554975038694883350> Je t'invite à lire le règlement dans <#1543748916552663070> afin d'éviter toute sanction, et à récupérer tes rôles dans <id:customize>`;
-
   if (cfg.welcomeChannelId) {
     const channel = member.guild.channels.cache.get(
       cfg.welcomeChannelId
     );
 
-    if (channel) {
-      let content = welcomeMessage;
+    if (channel && channel.isTextBased()) {
+      let welcomeMessage =
+        cfg.welcomeMessage ||
+        "Bienvenue {member} sur {server} !";
 
-      if (cfg.welcomePingRoleId) {
-        content =
-          `<@&${cfg.welcomePingRoleId}>\n\n` +
-          welcomeMessage;
-      }
+      const ping =
+        cfg.welcomePingEnabled &&
+        cfg.welcomePingRoleId
+          ? `<@&${cfg.welcomePingRoleId}>`
+          : "";
+
+      const statut =
+        cfg.welcomeStatusEnabled &&
+        cfg.soutienStatut
+          ? `\`${cfg.soutienStatut}\``
+          : "";
+
+      welcomeMessage = welcomeMessage
+        .replaceAll("{member.tag}", member.user.tag)
+        .replaceAll("{member}", member.toString())
+        .replaceAll("{server}", member.guild.name)
+        .replaceAll("{count}", String(memberCount))
+        .replaceAll("{ping}", ping)
+        .replaceAll("{statut}", statut);
 
       channel
         .send({
-          content,
+          content: welcomeMessage,
           allowedMentions: {
             users: [member.id],
-            roles: cfg.welcomePingRoleId
-              ? [cfg.welcomePingRoleId]
-              : [],
+            roles:
+              cfg.welcomePingEnabled &&
+              cfg.welcomePingRoleId
+                ? [cfg.welcomePingRoleId]
+                : [],
           },
         })
         .catch(() => {});
+    }
+  }
+
+  if (
+    cfg.autojoinPing?.enabled &&
+    Array.isArray(cfg.autojoinPing.channelIds)
+  ) {
+    for (const channelId of cfg.autojoinPing.channelIds) {
+      const channel = member.guild.channels.cache.get(channelId);
+
+      if (!channel || !channel.isTextBased()) continue;
+
+      const pingMessage = await channel.send({
+        content: `<@${member.id}>`,
+        allowedMentions: {
+          users: [member.id]
+        }
+      }).catch(() => null);
+
+      if (pingMessage) {
+        setTimeout(() => {
+          pingMessage.delete().catch(() => {});
+        }, 3000);
+      }
     }
   }
 
