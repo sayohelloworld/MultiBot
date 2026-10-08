@@ -62,7 +62,7 @@ module.exports = {
             );
         });
 
-        return message.reply({
+        return message.channel.send({
             components: [container],
             flags: MessageFlags.IsComponentsV2
         });
