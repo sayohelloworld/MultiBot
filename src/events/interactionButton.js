@@ -1,12 +1,11 @@
 const guildConfig = require('../utils/guildConfig');
 const economy = require('../utils/economy');
 const botProfileHandler = require('../structure/botProfileHandler');
+const interpolHandler = require('../structure/interpolHandler');
 
 const {
     EmbedBuilder
 } = require('discord.js');
-
-const SANS_FILTRЕ_ROLE_ID = '1553745092555313313';
 
 module.exports = {
     name: "interactionCreate",
@@ -16,18 +15,37 @@ module.exports = {
         if (!interaction.guild) return;
 
         try {
+            if (interaction.customId.startsWith('interpol_')) {
+                return interpolHandler.execute(interaction);
+            }
+
             if (interaction.customId.startsWith('botprofile_')) {
                 return botProfileHandler.execute(interaction);
             }
 
             if (interaction.customId === "sans_filtre_access") {
+                const config = guildConfig.getAll(interaction.guild.id);
+
+                if (!config.sansFiltreRoleId) {
+                    return await interaction.reply({
+                        content: "❌ Le rôle du tchat sans filtre n'est pas configuré sur ce serveur.",
+                        ephemeral: true
+                    });
+                }
+
                 const role = interaction.guild.roles.cache.get(
-                    SANS_FILTRЕ_ROLE_ID
+                    config.sansFiltreRoleId
                 );
 
                 if (!role) {
+                    guildConfig.set(
+                        interaction.guild.id,
+                        "sansFiltreRoleId",
+                        null
+                    );
+
                     return await interaction.reply({
-                        content: "❌ Le rôle du tchat sans filtre est introuvable.",
+                        content: "❌ Le rôle du tchat sans filtre n'existe plus. Utilise à nouveau `+sans-filtre`.",
                         ephemeral: true
                     });
                 }
@@ -39,7 +57,30 @@ module.exports = {
                     });
                 }
 
-                if (role.position >= interaction.guild.members.me.roles.highest.position) {
+                const botMember = interaction.guild.members.me;
+
+                if (!botMember) {
+                    return await interaction.reply({
+                        content: "❌ Impossible de récupérer mon membre sur ce serveur.",
+                        ephemeral: true
+                    });
+                }
+
+                if (!botMember.permissions.has('ManageRoles')) {
+                    return await interaction.reply({
+                        content: "❌ Je n'ai pas la permission de gérer les rôles.",
+                        ephemeral: true
+                    });
+                }
+
+                if (role.managed) {
+                    return await interaction.reply({
+                        content: "❌ Ce rôle est géré par Discord et ne peut pas être attribué.",
+                        ephemeral: true
+                    });
+                }
+
+                if (role.position >= botMember.roles.highest.position) {
                     return await interaction.reply({
                         content: "❌ Je ne peux pas attribuer ce rôle. Mon rôle doit être placé au-dessus du rôle Sans filtre.",
                         ephemeral: true
@@ -206,7 +247,7 @@ module.exports = {
                     .setColor('#00ff00')
                     .setTitle('🏦 Retrait effectué')
                     .setDescription(
-                        `Vous avez retiré **${userData.bank.toLocaleString()} bobux** de votre banque.`
+                        `Vous avez retiré **${userData.bank.toLocaleString()} bobux** en banque.`
                     )
                     .setFooter({
                         text: 'Utilisez le bouton 🔄 pour actualiser'
