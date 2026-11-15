@@ -7,8 +7,11 @@
 **100 % gratuit**
 
 > ✅ **300+ commandes multifonctions**
+>
 > ✅ Modération, utilitaires, gestion, divertissement et bien plus
+>
 > ✅ **Mises à jour et maintenance régulières**
+>
 > ✅ **Support dédié**
 
 ## ⚡ **Fonctionnalités**
